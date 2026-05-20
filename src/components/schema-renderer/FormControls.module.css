@@ -1,0 +1,91 @@
+.field {
+  display: grid;
+  min-width: 0;
+  gap: 6px;
+}
+
+.fullWidth {
+  grid-column: 1 / -1;
+}
+
+.label,
+.legend {
+  color: #111827;
+  font-size: 0.86rem;
+  font-weight: 750;
+}
+
+.label {
+  display: inline;
+}
+
+.requiredMark {
+  color: var(--danger);
+}
+
+.control[aria-invalid="true"] {
+  border-color: var(--danger);
+}
+
+.help {
+  color: var(--muted);
+  font-size: 0.78rem;
+  line-height: 1.35;
+}
+
+.error {
+  margin: 0;
+  color: var(--danger);
+  font-size: 0.82rem;
+  font-weight: 750;
+}
+
+.optionGroup {
+  display: grid;
+  grid-template-columns: repeat(3, max-content);
+  gap: 14px 34px;
+  border: 0;
+  margin: 0;
+  padding: 0;
+}
+
+.legend,
+.optionGroup > .help,
+.optionGroup > .error {
+  grid-column: 1 / -1;
+}
+
+.choiceRow {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  line-height: 1.2;
+}
+
+.choiceText {
+  margin-left: 8px;
+  color: #172033;
+  font-size: 0.84rem;
+  font-weight: 750;
+}
+
+.choiceControl {
+  width: 18px;
+  height: 18px;
+  min-height: 18px;
+  flex: 0 0 auto;
+  margin: 0;
+  padding: 0;
+}
+
+.checkboxField {
+  border: 0;
+  padding: 0;
+  background: transparent;
+}
+
+@media (max-width: 760px) {
+  .optionGroup {
+    grid-template-columns: 1fr;
+  }
+}
