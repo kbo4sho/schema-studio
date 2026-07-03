@@ -1,38 +1,49 @@
 import { expect, test } from "@playwright/test";
 
-test("builds, hydrates, validates, and submits the seeded form", async ({ page }) => {
+test("loads a predefined configuration into the animated form canvas", async ({ page }) => {
   await page.goto("/");
 
-  await expect(page.getByRole("heading", { name: "Schema Studio" })).toBeVisible();
-  const preview = page.locator(".preview-panel");
-  await expect(preview.getByLabel("State")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Load a form system" })).toBeVisible();
+  await expect(page.getByRole("button", { name: /Treasury onboarding/ })).toBeVisible();
+  await expect(page.getByRole("button", { name: /Working capital line/ })).toBeVisible();
+  await expect(page.getByRole("button", { name: /Benefits enrollment/ })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "No form loaded" })).toBeVisible();
 
-  const inspector = page.locator(".inspector-panel");
-  await expect(inspector.getByRole("button", { name: "Close inspector" })).toHaveCount(0);
-  await expect(inspector.getByRole("button", { name: "Generate field name from label" })).toHaveCount(0);
-  await inspector.getByRole("textbox", { name: "Label", exact: true }).fill("Employee full name");
-  await expect(preview.getByLabel("Employee full name")).toBeVisible();
-  await expect(page.getByLabel("Live JSON schema")).toHaveValue(/Employee full name/);
+  await page.getByRole("button", { name: /Treasury onboarding/ }).click();
 
-  await preview.getByLabel("Work email").click();
-  await expect(inspector.getByRole("textbox", { name: "Label", exact: true })).toHaveValue("Work email");
+  await expect(page.getByRole("heading", { name: "Treasury Operating Account" })).toBeVisible();
+  await expect(page.locator(".form-cell")).toHaveCount(5);
+  await expect(page.getByRole("button", { name: /Business identity/ })).toBeVisible();
+  await expect(page.getByLabel("Form contract")).toContainText("Account frame");
+  await expect(page.getByLabel("Form contract")).not.toContainText('"title": "Treasury Operating Account"');
 
-  await preview.getByLabel("Country").selectOption("CA");
-  await expect(preview.getByLabel("State")).toBeHidden();
+  await expect(page.getByLabel("Field properties")).toHaveCount(0);
+  await page.getByRole("button", { name: /Properties Legal business name/ }).click();
+  const fieldProperties = page.getByLabel("Field properties");
+  await expect(fieldProperties.getByRole("heading", { name: "Legal business name" })).toBeVisible();
+  await fieldProperties.getByLabel("Label").fill("Registered legal name");
+  await fieldProperties.getByLabel("Name").fill("registeredLegalName");
+  await fieldProperties.getByLabel("Placeholder").fill("Registered entity");
+  await expect(fieldProperties.getByRole("status")).toContainText("Changes saved");
+  await expect(page.getByLabel("Form contract")).toContainText("Registered legal name");
 
-  await page.getByRole("button", { name: "Hydrate preview" }).click();
-  await expect(page.getByText("Schema imported and hydrated successfully.")).toBeVisible();
+  await page.getByRole("button", { name: "Code" }).click();
+  await expect(page.getByLabel("Form contract")).toContainText('"title": "Treasury Operating Account"');
+  await expect(page.getByLabel("Form contract")).toContainText('"name": "registeredLegalName"');
+  await page.getByRole("button", { name: "Code" }).click();
 
-  await page.getByRole("button", { name: "Submit mock form" }).click();
-  await expect(preview.getByRole("alert")).toHaveCount(4);
+  await page.getByRole("button", { name: /Payment profile/ }).click();
+  await expect(page.getByLabel("Form contract")).toContainText("Monthly payment volume");
+  await expect(page.getByLabel("Form contract")).toContainText("primaryFundingRail");
 
-  await preview.getByLabel("Employee full name").fill("Jane Chen");
-  await preview.getByLabel("Work email").fill("jane@company.com");
-  await preview.getByLabel("State").selectOption("IL");
-  await preview.getByLabel("Preferred start date").fill("2026-06-01");
-  await preview.getByLabel("I confirm this request follows company policy.").check();
-  await page.getByRole("button", { name: "Submit mock form" }).click();
+  await page.getByLabel("Canvas view").getByRole("button", { name: "Form", exact: true }).click();
+  await expect(page.getByLabel("Treasury onboarding rendered form").getByLabel("Registered legal name")).toBeVisible();
+  await expect(page.getByLabel("Treasury onboarding rendered form").getByLabel("Primary funding rail")).toBeVisible();
+  await expect(page.locator(".cell-canvas")).toHaveCount(0);
 
-  await expect(page.getByText("Submitting mock enrollment...")).toBeVisible();
-  await expect(page.getByText(/Mock submission (accepted|failed)/)).toBeVisible();
+  await page.getByLabel("Treasury onboarding rendered form").getByLabel("Monthly payment volume").click();
+  await expect(page.getByLabel("Form contract")).toContainText("Payment profile");
+
+  await page.getByLabel("Canvas view").getByRole("button", { name: "Cards", exact: true }).click();
+  await expect(page.locator(".form-cell")).toHaveCount(5);
 });

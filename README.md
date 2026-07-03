@@ -1,6 +1,6 @@
-# Schema Studio
+# Intake Studio
 
-Schema Studio is a React app for visually designing forms, exporting the current form as JSON, hydrating the builder from JSON, and rendering a live validated preview with mock submission states. It also separates the schema-rendering layer from the builder so the same renderer and form controls could be reused in other product surfaces.
+Intake Studio is a React app for visually designing schema-backed form flows, exporting the current form as JSON, hydrating the builder from JSON, and rendering a live validated preview with mock submission states. It also separates the schema-rendering layer from the builder so the same renderer and form controls could be reused in other product surfaces.
 
 The core idea is that a form should be configurable as data. A user can shape the form in the builder, inspect or edit the schema directly, and see the same schema drive a reusable rendering layer.
 
@@ -27,9 +27,9 @@ npx playwright install chromium
 npm run test:e2e
 ```
 
-## Schema Studio Architecture
+## Intake Studio Architecture
 
-![Schema Studio Architecture](docs/images/schema-studio-architecture.png)
+![Intake Studio Architecture](docs/images/schema-studio-architecture.png)
 
 The app keeps a single `FormSchema` as the source of truth. Builder actions update that schema, the JSON drawer serializes the same object, and importing JSON validates and normalizes it before replacing app state.
 
